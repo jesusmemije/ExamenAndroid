@@ -1,14 +1,18 @@
 <resources>
+    <!-- Drawer strings-->
     <string name="app_name">Examen Android</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Ing. Jesús González Memije</string>
     <string name="nav_header_subtitle">Desarrollador Android</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Configuraciones</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <!-- Menú drawer -->
+    <string name="menu_movie">Top películas</string>
+    <string name="menu_location">Ubicaciones</string>
+    <string name="menu_photo">Subir fotos</string>
+    <string name="menu_user">Usuarios</string>
+
     <string name="todo">TODO</string>
 </resources>
