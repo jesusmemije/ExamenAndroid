@@ -19,7 +19,12 @@
     <!-- Movie Item -->
     <string name="movie_title">Movie Title</string>
     <string name="release_date">Release Date</string>
-    <string name="movie_topic">Catálogo de películas</string>
-    <string name="movie_subtopic">Películas populares</string>
 
+    <!-- Alert Dialog -->
+    <string name="ok">OK</string>
+    <string name="alert_message">Alert message</string>
+
+    <!-- Section title -->
+    <string name="section_title">Título</string>
+    <string name="section_subtitle">Subtítulo</string>
 </resources>

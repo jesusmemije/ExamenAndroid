@@ -1,5 +1,6 @@
 package com.memije.examenandroid.ui.movie
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.memije.examenandroid.databinding.FragmentMovieBinding
 import com.memije.examenandroid.room.entity.MovieEntity
+import com.memije.examenandroid.utils.AlertDialog
 
 class MovieFragment : Fragment(), MovieMVP.View {
 
@@ -19,6 +21,10 @@ class MovieFragment : Fragment(), MovieMVP.View {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding
 
+    // Instancia de la clase alert
+    private val alert = AlertDialog()
+
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,6 +33,9 @@ class MovieFragment : Fragment(), MovieMVP.View {
 
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        _binding.tvSectionTitle.text = "Catálogo de películas"
+        _binding.tvSectionSubtitle.text = "Películas populares"
 
         // Creamos la instance del presenter
         presenter = MoviePresenter(this)
@@ -42,7 +51,7 @@ class MovieFragment : Fragment(), MovieMVP.View {
 
             // Ocultamos el progress y mostramos el RV
             _binding.pbLoading.visibility = View.GONE
-            _binding.containerMovies.visibility = View.VISIBLE
+            _binding.nsvMovies.visibility = View.VISIBLE
 
             adapter = MovieAdapter(result as List<MovieEntity>)
             _binding.rvMovies.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)

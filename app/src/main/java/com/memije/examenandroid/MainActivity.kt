@@ -3,25 +3,28 @@ package com.memije.examenandroid
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.memije.examenandroid.databinding.ActivityMainBinding
+import com.memije.examenandroid.utils.AlertDialog
+
 
 @Suppress("SpellCheckingInspection")
 class MainActivity : AppCompatActivity() {
@@ -34,6 +37,9 @@ class MainActivity : AppCompatActivity() {
 
     // Instancia de LocationManager
     private var locationManager: LocationManager? = null
+
+    // Instancia de la clase alert
+    private val alert = AlertDialog()
 
     companion object {
         const val REQUEST_CODE_LOCATION = 0
@@ -91,20 +97,12 @@ class MainActivity : AppCompatActivity() {
 
     // Pedir permisos o agregarlos manualmente
     private fun requestLocationPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        ) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             // Ya se pidieron los permisos pero se rechazaron
-            Toast.makeText(this, "Es necesario ir ajustes y aceptar los permisos de ubicación", Toast.LENGTH_LONG).show()
+            alert.showDialog(this, "Es necesario ir ajustes y aceptar los permisos de ubicación")
         } else {
             // Apenas se pedirán los permisos
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_CODE_LOCATION
-            )
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE_LOCATION)
         }
     }
 
@@ -117,11 +115,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_CODE_LOCATION -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(
-                    this,
-                    "Es necesario ir ajustes y aceptar los permisos de ubicación",
-                    Toast.LENGTH_LONG
-                ).show()
+                alert.showDialog(this, "Es necesario ir ajustes y aceptar los permisos de ubicación")
             } else {
                 Toast.makeText(this, "Permisos concedidos...", Toast.LENGTH_SHORT).show()
                 requestLocationUpdates()
@@ -142,31 +136,39 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Obteniendo ubicación...", Toast.LENGTH_LONG).show()
         } catch (ex: SecurityException) {
             // Notificar al usuario
-            Toast.makeText(this, "No hay ubicación disponible", Toast.LENGTH_SHORT).show()
+            alert.showDialog(this, "No hay ubicación disponible")
         }
     }
 
-    // Obtiene la ubicación y la guarda en firestore
-    private val locationListener: LocationListener = LocationListener { location ->
+    // Methods listener
+    private val locationListener: LocationListener = object : LocationListener {
+        // Obtiene la ubicación y la guarda en firestore
+        override fun onLocationChanged(location: Location) {
+            // Obtener dirección a través de LatLong
+            val geocoder = Geocoder(applicationContext)
+            val list = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+            val direction: String = list[0].getAddressLine(0)
 
-        // Obtener dirección a través de LatLong
-        val geocoder = Geocoder(this)
-        val list = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-        val direction: String = list[0].getAddressLine(0)
-
-        // Guardar datos en FireStore
-        db.collection("locations").add(
-            hashMapOf(
-                "latitude" to location.latitude.toString(),
-                "longitude" to location.longitude.toString(),
-                "direction" to direction,
-                "created_at" to Timestamp.now()
+            // Guardar datos en FireStore
+            db.collection("locations").add(
+                hashMapOf(
+                    "latitude" to location.latitude.toString(),
+                    "longitude" to location.longitude.toString(),
+                    "direction" to direction,
+                    "created_at" to Timestamp.now()
+                )
             )
-        )
 
-        Log.d("saved_location", "La localización ha sido guardada en FireStore")
-
+            Log.d("saved_location", "La localización ha sido guardada en FireStore")
+        }
+        override fun onProviderEnabled(provider: String) {
+            Toast.makeText(applicationContext, "La ubicación esta activa", Toast.LENGTH_LONG).show()
+        }
+        override fun onProviderDisabled(provider: String) {
+            alert.showDialog(this@MainActivity, "La ubicación esta desactivada, es necesario activarla")
+        }
     }
+
 
     override fun onResume() {
         super.onResume()
