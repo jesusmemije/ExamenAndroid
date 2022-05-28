@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.memije.examenandroid.R
@@ -63,32 +64,24 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         db.collection("locations")
             .get()
             .addOnSuccessListener { result ->
-                lateinit var coordinatesZoom: LatLng
+
                 if (!result.isEmpty) {
+                    val boundsBuilder = LatLngBounds.Builder()
                     for (document in result) {
+
+                        Log.d("locations", document.data["direction"].toString())
+
+                        val latLng = LatLng(document.data["latitude"].toString().toDouble(), document.data["longitude"].toString().toDouble())
+                        boundsBuilder.include(latLng)
                         mMap.addMarker(
                             MarkerOptions()
-                                .position(
-                                    LatLng(
-                                        document.data["latitude"].toString().toDouble(),
-                                        document.data["longitude"].toString().toDouble()
-                                    )
-                                )
+                                .position(latLng)
                                 .title(document.data["direction"].toString())
-                        )
-
-                        // Atrapa última coordenada para el animatedCamera con Zoom
-                        coordinatesZoom = LatLng(
-                            document.data["latitude"].toString().toDouble(),
-                            document.data["longitude"].toString().toDouble()
+                                .snippet(document.data["latitude"].toString() + ", " + document.data["longitude"].toString())
                         )
                     }
 
-                    mMap.animateCamera(
-                        CameraUpdateFactory.newLatLngZoom(coordinatesZoom, 18f),
-                        4000,
-                        null
-                    )
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 500, 500,0))
 
                 } else {
                     alert.showDialog(activity, "Aún no se han registrado ubicaciones en el servidor")
