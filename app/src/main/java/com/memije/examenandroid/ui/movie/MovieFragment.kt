@@ -42,11 +42,10 @@ class MovieFragment : Fragment(), MovieMVP.View {
 
             // Ocultamos el progress y mostramos el RV
             _binding.pbLoading.visibility = View.GONE
-            _binding.rvMovies.visibility = View.VISIBLE
+            _binding.containerMovies.visibility = View.VISIBLE
 
             adapter = MovieAdapter(result as List<MovieEntity>)
-            _binding.rvMovies.layoutManager =
-                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            _binding.rvMovies.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             _binding.rvMovies.adapter = adapter
         }
     }
