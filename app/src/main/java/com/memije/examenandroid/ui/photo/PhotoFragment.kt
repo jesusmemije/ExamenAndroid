@@ -29,6 +29,9 @@ class PhotoFragment : Fragment() {
     // Instancia de la clase alert
     private val alert = AlertDialog()
 
+    // Var control showAlert
+    private var countPhotos = 1
+
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding
 
@@ -70,22 +73,22 @@ class PhotoFragment : Fragment() {
 
                 val clipData = data?.clipData
 
-                // Show loading - upload files
+                // Show loading - uploading...
+                _binding.pbLoading.visibility = View.VISIBLE
+                _binding.llUploadPhoto.visibility = View.GONE
 
                 if (clipData != null) {
-                    // Bucle que manda a subir las imagenes selecionadas
+                    countPhotos = clipData.itemCount
+                    // Bucle que manda a subir las imágenes selecionadas
                     for (i in 0 until clipData.itemCount) {
                         val uri = clipData.getItemAt(i).uri
                         uri?.let { fileUpload(it) }
                     }
-                    // Notificar al usuario - success
-                    alert.showDialog(activity, "Los archivos se han subido con éxito")
                 } else {
+                    countPhotos = 0
                     val uri = data?.data
                     uri?.let { fileUpload(it) }
                 }
-
-                // Esconder loading
 
             }
         }
@@ -100,14 +103,32 @@ class PhotoFragment : Fragment() {
             fileName.downloadUrl.addOnSuccessListener { uri ->
                 val hashMap = HashMap<String, String>()
                 hashMap["link"] = java.lang.String.valueOf(uri)
-
                 reference.child(reference.push().key.toString()).setValue(hashMap)
+            }
+        }.addOnCompleteListener { task ->
+            // Hidden loading - uploaded
+            _binding.pbLoading.visibility = View.GONE
+            _binding.llUploadPhoto.visibility = View.VISIBLE
 
-                Log.i("message", "File upload successfully")
+            if (task.isSuccessful) {
+                // Notificar al usuario - exitoso
+                if (countPhotos == 0) {
+                    alert.showDialog(activity, "La imagen se ha subido con éxito")
+                }
+                if (countPhotos == 1) {
+                    alert.showDialog(activity, "Las imágenes se han subido con éxito")
+                }
+            }
+
+            // Descontar del counter
+            if (countPhotos > 1) {
+                countPhotos--
             }
 
         }.addOnFailureListener {
-            Log.i("message", "File upload error")
+            // Hidden loading - uploaded error
+            _binding.pbLoading.visibility = View.GONE
+            _binding.llUploadPhoto.visibility = View.VISIBLE
             alert.showDialog(activity, "Estamos experimentando fallas al subir archivos, intente más tarde por favor")
         }
     }
