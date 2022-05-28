@@ -17,7 +17,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.memije.examenandroid.R
 import com.memije.examenandroid.databinding.FragmentLocationBinding
-import com.memije.examenandroid.databinding.FragmentMovieBinding
 import com.memije.examenandroid.utils.AlertDialog
 
 @Suppress("SpellCheckingInspection")
@@ -46,8 +45,8 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         _binding = FragmentLocationBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        _binding.tvSectionTitle.text = "Google Maps"
-        _binding.tvSectionSubtitle.text = "Marcadores de ubicaciones registradas"
+        binding.tvSectionTitle.text = "Google Maps"
+        binding.tvSectionSubtitle.text = "Marcadores de ubicaciones registradas"
 
         // Enlazamos el componente del Fragment que contiene el mapa
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment

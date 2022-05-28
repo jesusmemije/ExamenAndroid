@@ -27,4 +27,6 @@
     <!-- Section title -->
     <string name="section_title">Título</string>
     <string name="section_subtitle">Subtítulo</string>
+
+    <string name="upload">SUBIR IMÁGENES</string>
 </resources>

@@ -34,8 +34,8 @@ class MovieFragment : Fragment(), MovieMVP.View {
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        _binding.tvSectionTitle.text = "Catálogo de películas"
-        _binding.tvSectionSubtitle.text = "Películas populares"
+        binding.tvSectionTitle.text = "Catálogo de películas"
+        binding.tvSectionSubtitle.text = "Películas populares"
 
         // Creamos la instance del presenter
         presenter = MoviePresenter(this)
@@ -50,12 +50,12 @@ class MovieFragment : Fragment(), MovieMVP.View {
         activity?.runOnUiThread {
 
             // Ocultamos el progress y mostramos el RV
-            _binding.pbLoading.visibility = View.GONE
-            _binding.nsvMovies.visibility = View.VISIBLE
+            binding.pbLoading.visibility = View.GONE
+            binding.nsvMovies.visibility = View.VISIBLE
 
             adapter = MovieAdapter(result as List<MovieEntity>)
-            _binding.rvMovies.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            _binding.rvMovies.adapter = adapter
+            binding.rvMovies.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            binding.rvMovies.adapter = adapter
         }
     }
 
