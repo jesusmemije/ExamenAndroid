@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.memije.examenandroid.room.dao.MovieDao
 import com.memije.examenandroid.room.entity.MovieEntity
 
-@Database(entities = [MovieEntity::class], version = 1)
+@Database(entities = [MovieEntity::class], version = 1, exportSchema = false)
 abstract class ExamenRoomDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao

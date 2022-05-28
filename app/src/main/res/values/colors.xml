@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme color -->
     <color name="primaryColor">#b71c1c</color>
     <color name="primaryLightColor">#f05545</color>
     <color name="primaryDarkColor">#7f0000</color>
-
     <color name="secondaryColor">#b71c1c</color>
     <color name="secondaryLightColor">#f05545</color>
     <color name="secondaryDarkColor">#7f0000</color>
-
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
 
-    <color name="pale_black">#1D1D1D</color>
-    <color name="dark_grey">#2D2D2D</color>
+    <!--  -->
+    <color name="bg_black">#1D1D1D</color>
+    <color name="bg_dark_grey">#2D2D2D</color>
     <color name="white">#FFFFFF</color>
 </resources>

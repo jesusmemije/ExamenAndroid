@@ -1,4 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        google()  // Google's Maven repository
+    }
+    dependencies {
+        classpath 'com.google.gms:google-services:4.3.10'
+    }
+}
+
 plugins {
     id 'com.android.application' version '7.2.0' apply false
     id 'com.android.library' version '7.2.0' apply false
@@ -10,7 +19,7 @@ ext {
     navigationVersion = '2.4.2'
     roomVersion = '2.4.2'
     retrofitVersion = '2.9.0'
-    okhttpVersion = '4.9.0'
+    okhttpVersion = '4.9.3'
 }
 
 task clean(type: Delete) {

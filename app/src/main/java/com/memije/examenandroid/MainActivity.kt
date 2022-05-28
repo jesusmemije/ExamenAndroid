@@ -1,6 +1,14 @@
 package com.memije.examenandroid
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -9,12 +17,33 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 import com.memije.examenandroid.databinding.ActivityMainBinding
 
+@Suppress("SpellCheckingInspection")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    // Instancia de Firestore
+    private val db = FirebaseFirestore.getInstance()
+
+    // Instancia de LocationManager
+    private var locationManager: LocationManager? = null
+
+    companion object {
+        const val REQUEST_CODE_LOCATION = 0
+
+        // Mínimo tiempo para updates en milisegundos = 15 minutos
+        const val MIN_TIEMPO_ENTRE_UPDATES: Long = (1000 * 60 * 15)
+
+        // Mínima distancia para updates en metros.
+        const val MIN_CAMBIO_DISTANCIA_PARA_UPDATES: Float = 1.5f
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +65,112 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        // Crear una referencia de LocationManager
+        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
+
+        // Check permisos de ubicación
+        isPermissionGranted()
+    }
+
+    // Valida permiso aceptado
+    private fun isPermissionGranted() {
+        if (!isLocationPermissionGranted()) {
+            // No tiene permisos. Manda a pedirlos
+            requestLocationPermission()
+        } else {
+            // Si tiene permisos. Manda a consultar e insertar ubicación cada 15 min.
+            requestLocationUpdates()
+        }
+    }
+
+    // Check si tiene permisos aceptados
+    private fun isLocationPermissionGranted() = ContextCompat.checkSelfPermission(
+        this, Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+
+    // Pedir permisos o agregarlos manualmente
+    private fun requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        ) {
+            // Ya se pidieron los permisos pero se rechazaron
+            Toast.makeText(this, "Es necesario ir ajustes y aceptar los permisos de ubicación", Toast.LENGTH_LONG).show()
+        } else {
+            // Apenas se pedirán los permisos
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_CODE_LOCATION
+            )
+        }
+    }
+
+    // Resultado de permiso aceptado o rechazado
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_CODE_LOCATION -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(
+                    this,
+                    "Es necesario ir ajustes y aceptar los permisos de ubicación",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                Toast.makeText(this, "Permisos concedidos...", Toast.LENGTH_SHORT).show()
+                requestLocationUpdates()
+            }
+        }
+    }
+
+    // Función para mandar a escuchar la localización cada 15 min
+    private fun requestLocationUpdates() {
+        try {
+            locationManager?.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                MIN_TIEMPO_ENTRE_UPDATES,
+                MIN_CAMBIO_DISTANCIA_PARA_UPDATES,
+                locationListener,
+                Looper.getMainLooper()
+            )
+            Toast.makeText(this, "Obteniendo ubicación...", Toast.LENGTH_LONG).show()
+        } catch (ex: SecurityException) {
+            // Notificar al usuario
+            Toast.makeText(this, "No hay ubicación disponible", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Obtiene la ubicación y la guarda en firestore
+    private val locationListener: LocationListener = LocationListener { location ->
+
+        // Obtener dirección a través de LatLong
+        val geocoder = Geocoder(this)
+        val list = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+        val direction: String = list[0].getAddressLine(0)
+
+        // Guardar datos en FireStore
+        db.collection("locations").add(
+            hashMapOf(
+                "latitude" to location.latitude.toString(),
+                "longitude" to location.longitude.toString(),
+                "direction" to direction,
+                "created_at" to Timestamp.now()
+            )
+        )
+
+        Log.d("saved_location", "La localización ha sido guardada en FireStore")
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isPermissionGranted()
     }
 
     override fun onSupportNavigateUp(): Boolean {
