@@ -5,12 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.memije.examenandroid.room.dao.MovieDao
+import com.memije.examenandroid.room.dao.UserDao
 import com.memije.examenandroid.room.entity.MovieEntity
+import com.memije.examenandroid.room.entity.UserEntity
 
-@Database(entities = [MovieEntity::class], version = 1, exportSchema = false)
+@Database(entities = [MovieEntity::class, UserEntity::class], version = 1, exportSchema = false)
 abstract class ExamenRoomDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
+    abstract fun userDao(): UserDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the same time.

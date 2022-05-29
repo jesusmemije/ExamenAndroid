@@ -6,15 +6,17 @@
     <string name="nav_header_title">Ing. Jesús González Memije</string>
     <string name="nav_header_subtitle">Desarrollador Android</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Configuraciones</string>
+
+    <!-- Sections general-->
+    <string name="section_title">Título</string>
+    <string name="section_subtitle">Subtítulo</string>
+    <string name="todo">TODO</string>
 
     <!-- Menú drawer -->
     <string name="menu_movie">Top películas</string>
     <string name="menu_location">Ubicaciones</string>
     <string name="menu_photo">Subir fotos</string>
     <string name="menu_user">Usuarios</string>
-
-    <string name="todo">TODO</string>
 
     <!-- Movie Item -->
     <string name="movie_title">Movie Title</string>
@@ -24,9 +26,19 @@
     <string name="ok">OK</string>
     <string name="alert_message">Alert message</string>
 
-    <!-- Section title -->
-    <string name="section_title">Título</string>
-    <string name="section_subtitle">Subtítulo</string>
-
+    <!-- Photos -->
     <string name="upload">SUBIR IMÁGENES</string>
+
+    <!-- Form User -->
+    <string name="full_name">Nombre completo</string>
+    <string name="phone">Teléfono</string>
+    <string name="email">Correo</string>
+    <string name="address">Dirección</string>
+    <string name="image">Imagen</string>
+    <string name="required">Requerido</string>
+    <string name="submit">Guardar</string>
+    <string name="add_user">Agregar usuario</string>
+    <string name="user_name">Jesús González Memije</string>
+    <string name="user_email_phone">memije.dev@gmail.com | 7551400924</string>
+    <string name="user_address">Principal SN, 40980, Acapulco, Gro.</string>
 </resources>
