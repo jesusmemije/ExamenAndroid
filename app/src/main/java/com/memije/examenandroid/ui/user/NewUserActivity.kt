@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
 import com.memije.examenandroid.databinding.ActivityNewUserBinding
+import com.memije.examenandroid.room.entity.UserEntity
 import com.memije.examenandroid.utils.AlertDialog
 
-class NewUserActivity : AppCompatActivity() {
+class NewUserActivity : AppCompatActivity(), UserMVP.View {
 
     private lateinit var binding: ActivityNewUserBinding
     private lateinit var presenter: UserMVP.Presenter
@@ -20,8 +21,10 @@ class NewUserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNewUserBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
+
+        // Creamos la instance del presenter
+        presenter = UserPresenter(this)
 
         binding.tvSectionTitle.text = "Nuevo usuario"
 
@@ -54,13 +57,15 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-        var message = "Email: " + binding.emailEditText.text
-        message += "\nPhone: " + binding.phoneEditText.text
-        message += "\nFullName: " + binding.fullNameEditText.text
-        message += "\nAddress: " + binding.addressEditText.text
+        val name = binding.fullNameEditText.text.toString()
+        val phone = binding.phoneEditText.text.toString().toLong()
+        val email: String = binding.emailEditText.text.toString()
+        val address = binding.addressEditText.text.toString()
 
-        Toast.makeText(this, "SUBMMIT: $message", Toast.LENGTH_LONG).show()
+        val user = UserEntity(0, name, phone, email, address)
 
+        // Inicializamos el método que nos obtendrá los usuarios
+        presenter.setInsertUserPresenter(this, user)
     }
 
     private fun invalidForm() {
@@ -143,5 +148,21 @@ class NewUserActivity : AppCompatActivity() {
             return "La dirección es requerida"
         }
         return null
+    }
+
+    override fun showResultListView(result: List<UserEntity?>?, size: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun showResultInsertView(result: String?) {
+        this.runOnUiThread {
+            alert.showDialog(this, result.toString())
+        }
+    }
+
+    override fun showErrorView(result: String?) {
+        this.runOnUiThread {
+            alert.showDialog(this, result.toString())
+        }
     }
 }

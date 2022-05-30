@@ -3,6 +3,7 @@ package com.memije.examenandroid.ui.user
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.memije.examenandroid.databinding.FragmentUserBinding
 import com.memije.examenandroid.room.entity.UserEntity
 import com.memije.examenandroid.utils.AlertDialog
-
 
 class UserFragment : Fragment(), UserMVP.View {
 
@@ -41,8 +41,6 @@ class UserFragment : Fragment(), UserMVP.View {
 
         // Creamos la instance del presenter
         presenter = UserPresenter(this)
-        // Inicializamos el método que nos obtendrá los usuarios
-        presenter.getDataUsersPresenter(root.context)
 
         binding.fabAddUser.setOnClickListener {
             val intent = Intent(activity, NewUserActivity::class.java)
@@ -53,14 +51,12 @@ class UserFragment : Fragment(), UserMVP.View {
     }
 
     // Método que trae el resultado del response
-    override fun showResultView(result: List<UserEntity?>?, size: Int) {
+    override fun showResultListView(result: List<UserEntity?>?, size: Int) {
         activity?.runOnUiThread {
 
             // Ocultamos el progress y mostramos el RV
             binding.pbLoading.visibility = View.GONE
             binding.nsvUsers.visibility = View.VISIBLE
-
-            Toast.makeText(activity, "Obtiene resultados", Toast.LENGTH_LONG).show()
 
             adapter = UserAdapter(result as List<UserEntity>)
             binding.rvUsers.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -68,15 +64,24 @@ class UserFragment : Fragment(), UserMVP.View {
         }
     }
 
+    override fun showResultInsertView(result: String?) {
+        TODO("Not yet implemented")
+    }
+
     // Método que trae el error del response
     override fun showErrorView(result: String?) {
-
-        // Ocultamos el progress y mostramos el RV
-        binding.pbLoading.visibility = View.GONE
-        binding.nsvUsers.visibility = View.VISIBLE
-
         activity?.runOnUiThread {
+            // Ocultamos el progress y mostramos el RV
+            binding.pbLoading.visibility = View.GONE
+            binding.nsvUsers.visibility = View.VISIBLE
+            // Show error
             alert.showDialog(activity, result.toString())
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Inicializamos el método que nos obtendrá los usuarios
+        presenter.getDataUsersPresenter(activity)
     }
 }

@@ -23,10 +23,26 @@ class UserInteractor(presenter: UserMVP.Presenter) : UserMVP.Interactor {
                 if (userAll.isEmpty()) {
                     mPresenter.showErrorPresenter("Aún no hay usuarios registrados")
                 } else {
-                    mPresenter.showResultPresenter(userAll, userAll.size)
+                    mPresenter.showResultListPresenter(userAll, userAll.size)
                 }
             } catch (e: Exception) {
                 mPresenter.showErrorPresenter("Estamos experimentando problemas al obtener los usuarios")
+            }
+        }
+    }
+
+    override fun setInsertUserInteractor(context: Context?, user: UserEntity?) {
+        val db: ExamenRoomDatabase = ExamenRoomDatabase.getDatabase(context!!)
+        userDao = db.userDao()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Insertamos el user
+                if (user != null) {
+                    userDao.insert(user)
+                    mPresenter.showResultInsertPresenter("La inserción se ha realizado con éxito")
+                }
+            } catch (e: Exception) {
+                mPresenter.showErrorPresenter("Estamos experimentando problemas al insertar el usuario")
             }
         }
     }

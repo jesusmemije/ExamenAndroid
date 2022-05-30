@@ -74,9 +74,6 @@ class MainActivity : AppCompatActivity() {
 
         // Crear una referencia de LocationManager
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
-
-        // Check permisos de ubicación
-        isPermissionGranted()
     }
 
     // Valida permiso aceptado
@@ -169,9 +166,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onResume() {
         super.onResume()
+        // Check permisos de ubicación
+        Log.d("location", "Checa permisos de ubicación")
         isPermissionGranted()
     }
 
