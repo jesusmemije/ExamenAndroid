@@ -11,6 +11,7 @@ import com.memije.examenandroid.utils.AlertDialog
 class NewUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNewUserBinding
+    private lateinit var presenter: UserMVP.Presenter
 
     // Instancia de la clase alert
     private val alert = AlertDialog()
@@ -19,7 +20,8 @@ class NewUserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNewUserBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        val view = binding.root
+        setContentView(view)
 
         binding.tvSectionTitle.text = "Nuevo usuario"
 
@@ -29,7 +31,9 @@ class NewUserActivity : AppCompatActivity() {
         addressFocusListener()
 
         binding.submitButton.setOnClickListener { submitForm() }
-
+        binding.closeButton.setOnClickListener{
+            finish()
+        }
     }
 
     private fun submitForm() {

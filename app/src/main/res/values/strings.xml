@@ -41,4 +41,5 @@
     <string name="user_name">Jesús González Memije</string>
     <string name="user_email_phone">memije.dev@gmail.com | 7551400924</string>
     <string name="user_address">Principal SN, 40980, Acapulco, Gro.</string>
+    <string name="regresar">Regresar</string>
 </resources>

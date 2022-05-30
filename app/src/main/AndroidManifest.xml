@@ -24,6 +24,10 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".ui.user.NewUserActivity"
+            android:theme="@style/Theme.ExamenAndroid.NoActionBar"/>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ExamenAndroid.NoActionBar">

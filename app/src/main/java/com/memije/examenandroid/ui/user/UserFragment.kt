@@ -1,15 +1,18 @@
 package com.memije.examenandroid.ui.user
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.memije.examenandroid.databinding.FragmentUserBinding
 import com.memije.examenandroid.room.entity.UserEntity
 import com.memije.examenandroid.utils.AlertDialog
+
 
 class UserFragment : Fragment(), UserMVP.View {
 
@@ -41,6 +44,11 @@ class UserFragment : Fragment(), UserMVP.View {
         // Inicializamos el método que nos obtendrá los usuarios
         presenter.getDataUsersPresenter(root.context)
 
+        binding.fabAddUser.setOnClickListener {
+            val intent = Intent(activity, NewUserActivity::class.java)
+            activity?.startActivity(intent)
+        }
+
         return root
     }
 
@@ -54,9 +62,9 @@ class UserFragment : Fragment(), UserMVP.View {
 
             Toast.makeText(activity, "Obtiene resultados", Toast.LENGTH_LONG).show()
 
-            /* adapter = UserAdapter(result as List<UserEntity>)
+            adapter = UserAdapter(result as List<UserEntity>)
             binding.rvUsers.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            binding.rvUsers.adapter = adapter */
+            binding.rvUsers.adapter = adapter
         }
     }
 
