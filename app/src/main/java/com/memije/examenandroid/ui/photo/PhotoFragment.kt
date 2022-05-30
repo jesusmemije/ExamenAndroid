@@ -2,7 +2,10 @@ package com.memije.examenandroid.ui.photo
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -50,7 +53,14 @@ class PhotoFragment : Fragment() {
 
         // Acción click para abrir galería y posteriormente subir imagen
         binding.ivUplaod.setOnClickListener {
-            fileManager()
+            val cm = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+            val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
+            if (isConnected) {
+                fileManager()
+            } else {
+                alert.showDialog(activity, "No tiene conexión a internet")
+            }
         }
 
         return root
