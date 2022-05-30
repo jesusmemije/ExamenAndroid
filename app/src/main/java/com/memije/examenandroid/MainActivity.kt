@@ -125,6 +125,7 @@ class MainActivity : AppCompatActivity() {
 
     // Función para mandar a escuchar la localización cada 15 min
     private fun requestLocationUpdates() {
+        Log.d("listener_location", "fun requestLocationUpdates")
         try {
             locationManager?.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
@@ -133,7 +134,6 @@ class MainActivity : AppCompatActivity() {
                 locationListener,
                 Looper.getMainLooper()
             )
-            Toast.makeText(this, "Obteniendo ubicación...", Toast.LENGTH_LONG).show()
         } catch (ex: SecurityException) {
             // Notificar al usuario
             alert.showDialog(this, "No hay ubicación disponible")

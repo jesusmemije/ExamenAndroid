@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.memije.examenandroid.databinding.FragmentMovieBinding
@@ -18,11 +17,11 @@ class MovieFragment : Fragment(), MovieMVP.View {
     private lateinit var presenter: MovieMVP.Presenter
     private lateinit var adapter: MovieAdapter
 
-    // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding
-
     // Instancia de la clase alert
     private val alert = AlertDialog()
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -45,7 +44,7 @@ class MovieFragment : Fragment(), MovieMVP.View {
         return root
     }
 
-    // Método que trae el resultado de la respuesta
+    // Método que trae el resultado del response
     override fun showResultView(result: List<MovieEntity?>?, size: Int) {
         activity?.runOnUiThread {
 
@@ -59,11 +58,15 @@ class MovieFragment : Fragment(), MovieMVP.View {
         }
     }
 
-    // Método que trae el error de la respuesta
+    // Método que trae el error del response
     override fun showErrorView(result: String?) {
+
+        // Ocultamos el progress y mostramos el RV
+        binding.pbLoading.visibility = View.GONE
+        binding.nsvMovies.visibility = View.VISIBLE
+
         activity?.runOnUiThread {
-            Toast.makeText(activity, result.toString(), Toast.LENGTH_LONG).show()
+            alert.showDialog(activity, result.toString())
         }
     }
-
 }

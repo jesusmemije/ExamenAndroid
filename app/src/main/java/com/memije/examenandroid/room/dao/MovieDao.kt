@@ -1,14 +1,11 @@
 package com.memije.examenandroid.room.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.memije.examenandroid.room.entity.MovieEntity
 
 @Dao
 interface MovieDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(movieEntity: MovieEntity)
 
     @Update

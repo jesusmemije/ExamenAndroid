@@ -9,7 +9,7 @@ import com.memije.examenandroid.room.dao.UserDao
 import com.memije.examenandroid.room.entity.MovieEntity
 import com.memije.examenandroid.room.entity.UserEntity
 
-@Database(entities = [MovieEntity::class, UserEntity::class], version = 1, exportSchema = false)
+@Database(entities = [MovieEntity::class, UserEntity::class], version = 1)
 abstract class ExamenRoomDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao

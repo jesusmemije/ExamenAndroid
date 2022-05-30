@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.memije.examenandroid.databinding.FragmentUserBinding
 import com.memije.examenandroid.room.entity.UserEntity
 import com.memije.examenandroid.utils.AlertDialog
@@ -17,11 +17,11 @@ class UserFragment : Fragment(), UserMVP.View {
     private lateinit var presenter: UserMVP.Presenter
     private lateinit var adapter: UserAdapter
 
-    // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding
-
     // Instancia de la clase alert
     private val alert = AlertDialog()
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -52,17 +52,23 @@ class UserFragment : Fragment(), UserMVP.View {
             binding.pbLoading.visibility = View.GONE
             binding.nsvUsers.visibility = View.VISIBLE
 
-            adapter = UserAdapter(result as List<UserEntity>)
+            Toast.makeText(activity, "Obtiene resultados", Toast.LENGTH_LONG).show()
+
+            /* adapter = UserAdapter(result as List<UserEntity>)
             binding.rvUsers.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            binding.rvUsers.adapter = adapter
+            binding.rvUsers.adapter = adapter */
         }
     }
 
     // Método que trae el error del response
     override fun showErrorView(result: String?) {
+
+        // Ocultamos el progress y mostramos el RV
+        binding.pbLoading.visibility = View.GONE
+        binding.nsvUsers.visibility = View.VISIBLE
+
         activity?.runOnUiThread {
             alert.showDialog(activity, result.toString())
         }
     }
-
 }

@@ -9,8 +9,7 @@ import com.memije.examenandroid.databinding.MovieItemBinding
 import com.memije.examenandroid.room.entity.MovieEntity
 import com.squareup.picasso.Picasso
 
-class MovieAdapter(movieList: List<MovieEntity>) :
-    RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
+class MovieAdapter(movieList: List<MovieEntity>) : RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
 
     private var mMovieList: List<MovieEntity> = movieList
 
